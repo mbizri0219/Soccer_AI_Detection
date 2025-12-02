@@ -1,4 +1,6 @@
 soccer_AI_venv/
+.venv/
+venv/
 __pycache__/
 *.pyc
 *.pyo
