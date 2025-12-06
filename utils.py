@@ -1,5 +1,6 @@
 import logging
 import cv2
+import numpy as np
 #This file is for methods which help with calculating varying measurements and for setting different 
 # or designs based on class
 
@@ -20,13 +21,30 @@ def bbox_center_bottom(x1, y1, x2, y2):
     y_bottom = int(y2)
     return x_center, y_bottom
 
-def get_clicked_pixel(frame):
-    
 
-#Calculating the BGR values from the clicked pixel
-def get_bgr_values(frame, x, y):
-    bgr_values = frame[y, x, :]
-    return bgr_values
+class BGRHandler:
+    
+    def __init__(self, frame):
+        self.frame = frame
+        self.BGR_values = []
+        
+
+    def click_event(self, event):
+        x = int(event.xdata)
+        y = int(event.ydata)
+        self.BGR_values.append(self.get_bgr_values(x, y)) #adds the BGR values to the list
+        print(f"BGR values: {self.BGR_values}")
+        print(f"Pixel values: {self.frame[y, x, :]}")
+
+    #Calculating the BGR values from the clicked pixel
+    def get_bgr_values(self, x, y):
+        bgr_values = self.frame[y, x, :]
+        return bgr_values
+    
+    def min_max_bgr_values(self):
+        min_bgr_values = np.min(self.BGR_values, axis=0)
+        max_bgr_values = np.max(self.BGR_values, axis=0)
+        return min_bgr_values, max_bgr_values
 
     # Main processing function:
 
