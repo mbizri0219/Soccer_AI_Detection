@@ -9,3 +9,5 @@ seaborn>=0.12.0
 torch>=2.0.0
 torchvision>=0.15.0
 
+# Jupyter for notebook support in Docker
+jupyterlab>=4.0.0
