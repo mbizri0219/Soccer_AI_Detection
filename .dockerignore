@@ -1,0 +1,29 @@
+# Ignore large data files - users should mount these separately
+dataset/
+input-videos/
+runs/
+
+# Ignore model weights - users download or mount their own
+*.pt
+
+# Ignore output files
+output.mp4
+*.mp4
+
+# Ignore Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Ignore git
+.git/
+.gitignore
+
+# Ignore environment files
+.env
+venv/
+.venv/
+

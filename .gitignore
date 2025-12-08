@@ -1,23 +1,87 @@
-soccer_AI_venv/
-.venv/
-venv/
+# ===========================================
+# LARGE FILES - Don't push to GitHub
+# ===========================================
+
+# Dataset images (too large, users download separately)
+dataset/train/
+dataset/valid/
+dataset/test/
+
+# Video files
+input-videos/
+*.mp4
+*.avi
+*.mov
+*.mkv
+
+# Model weights (users download separately)
+*.pt
+*.pth
+*.onnx
+
+# Training outputs
+runs/
+
+# ===========================================
+# PYTHON
+# ===========================================
+
+# Byte-compiled files
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-*.so
-*.egg
-*.egg-info
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env/
+
+# Distribution / packaging
+*.egg-info/
 dist/
 build/
-*.log
-.DS_Store
+
+# ===========================================
+# JUPYTER
+# ===========================================
+
+# Checkpoint files
 .ipynb_checkpoints/
 
-# Large files - don't push to GitHub
-Training_Dataset/
-inference_results/
-output.mp4
-train64/
-*.pt
+# ===========================================
+# IDE / EDITOR
+# ===========================================
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Cursor
+.cursor/
+
+# ===========================================
+# OS FILES
+# ===========================================
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ===========================================
+# MISC
+# ===========================================
+
+# Environment variables
+.env
+*.env
+
+# Log files
+*.log
