@@ -46,3 +46,9 @@ Fine tuning / training:
     c- We want to look at the graphs that were produced by our train to see the best confidence score to use for the inference, the precision, recall and to make sure our model is doing a good job predicting. I explain my analysis of the graphs in the codebase
 
     d- We then want to do another inference, model.predict(), to see how our fine-tuned model compares to the base model we previously used in a prediction. This is done by doing another inference that uses the best.pt from our train. In this example our detections were more accurate than they were before we did the fine tune
+
+Video Processing:
+
+    1-Whenever you need to process a video your mind should immediately go to opencv and its videocapture() , videowriter() classes.
+
+    2-we then use our model, set the color for the annotation based on the class of the detection and set a while loop which loops through the frames and applies annotations to each frame. In this while loop, we also display the first frame through matplotlib and allow for us to interact with the frame by clicking on it so that we can choose which pixels range we want to mask and which we dont want to mask in the model.predict() we do to apply our bounding boxes.
