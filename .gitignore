@@ -1,6 +1,15 @@
+# ===========================================
+# VIRTUAL ENVIRONMENTS
+# ===========================================
 soccer_AI_venv/
 .venv/
 venv/
+env/
+.env/
+
+# ===========================================
+# PYTHON CACHE
+# ===========================================
 __pycache__/
 *.pyc
 *.pyo
@@ -11,7 +20,41 @@ __pycache__/
 *.egg-info
 dist/
 build/
-*.log
-.DS_Store
-.ipynb_checkpoints/
 
+# ===========================================
+# LARGE FILES - DO NOT PUSH TO GITHUB
+# ===========================================
+
+# Training outputs and model weights
+train64/
+runs/
+*.pt
+*.pth
+*.onnx
+
+# Dataset (too large for GitHub)
+Training_Dataset/
+dataset/
+
+# Videos
+input-videos/
+output.mp4
+*.mp4
+*.avi
+*.mov
+
+# ===========================================
+# IDE / EDITOR
+# ===========================================
+.ipynb_checkpoints/
+.vscode/
+.idea/
+.cursor/
+
+# ===========================================
+# OS FILES
+# ===========================================
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.log

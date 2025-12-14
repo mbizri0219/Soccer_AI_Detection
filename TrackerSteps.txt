@@ -1,0 +1,13 @@
+We need a tracker. Detections arent enough because the detections from one frame arent being linked to the detections from the second frame. As an example, it isnt knowing that the bounding box on one detection from one frame is the same player that was detected on the next frame. It isnt linking them together.
+
+We want to assign the bounding box to an entity across multiple frames (this is called tracking). In this case, maybe an ID
+
+You dont want to do it where the closest bounding box from a previous frame is the one that is associated to the next bounding box on the next frame because another object could be closer because of the movement between frames and it could skew things
+
+We want our tracker to also predict the movement by understanding the direction the object is moving in. It would also be helpful if it took in visual features (this user is wearing white and the user in the next frame is wearing white) along with it being closer to the spot where the previous bounding box was. 
+
+We assign an ID to each bounding box and figure out where he was in the previous frame and where he is in the current frame (this allows for different tracking application)
+
+supervision bytetracker is what we will use
+It will need the detection and then it will need to track it. takes the bounding boxes and matches them to an id
+
