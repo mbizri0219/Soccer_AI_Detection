@@ -5,53 +5,11 @@ import numpy as np
 # This file is for methods which help with calculating varying measurements and for setting different
 # or designs based on class
 
-# this class is to help us choose which pixels we want to mask and which pixels we want to mask when we process the video
-# class BGRHandler:
-#     # the constructor, we are passing the frame because that is going to be needed for every instance of this class
-#     # we also pass the creation of a list because we are going to need it created anytime we instantiate the class
-#     def __init__(self, frame):
-#         self.frame = frame
-#         self.BGR_values = []
-
-#     # Calculating the BGR values from the clicked pixel
-#     # first, we need to pass x and y coordiantes of the BGR pixel to be able to get the BGR values from it
-#     # second remember that the frame has 3 dimensions (height, width and channels) we need to pass the y, x to get the BGR values
-#     # we have : for the BGR values because we want all three of them for the x and y coordinates.
-#     # the frame has the height first then the width then the channels
-#     def get_bgr_values(self, x, y):
-#         bgr_values = self.frame[y, x, :]
-#         return bgr_values
-
-#     # this function is what is called when we click on the frame. the x gets the x coordiantes through xdata and y does the same
-#     # we pass the x and y values from the click to our get_bgr_values to get the BGR values then we append the BGR
-#     # values to our list
-#     def click_event(self, event):
-#         x = int(event.xdata)
-#         y = int(event.ydata)
-#         self.BGR_values.append(
-#             self.get_bgr_values(x, y)
-#         )  # adds the BGR values to the list
-#         print(f"BGR values: {self.BGR_values}")
-#         print(f"Pixel values: {self.frame[y, x, :]}")
-
-#     # this function is to get the min and max BGR values from the list of BGR values we created so that we can
-#     # have a range of BGR values for our mask to keep vs mask out
-#     # we use the np.min and npmax as an easy way to get the min an max in a column (axis=0 is for column axis=1 is for row)
-#     def min_max_bgr_values(self):
-#         min_bgr_values = np.min(self.BGR_values, axis=0)
-#         max_bgr_values = np.max(self.BGR_values, axis=0)
-#         return min_bgr_values, max_bgr_values
-
-
-    # Main processing function:
-
-
-# process_frame(frame, model, class_colors) - Runs inference and draws annotations
-# Returns the annotated frame
-
-# Main loop:
-# Keep the video reading/writing loop
-# Call process_frame() for each frame
+def player_jersey(x1,y1,x2,y2):
+    height = y2 - y1
+    y_top = y1 + int(height * 0.25)     # 25% down from top
+    y_bottom = y1 + int(height * 0.5)   # 50% down from top (middle)
+    return x1,y_top,x2,y_bottom
 
 
 # here I calculated the bbox width for calculations that will be needed
