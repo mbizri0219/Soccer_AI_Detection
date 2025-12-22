@@ -3,7 +3,7 @@
 class Config:
     #this is where we set the class colors dictionary for our classes
     CLASS_COLORS ={0: (0, 0, 255), 1: (0, 255, 0), 2: (255, 0, 0), 3:(0, 255, 255)}
-
+    TEAM_COLORS = {0: (255, 0, 0), 1: (0, 0, 255)}
     #Class Names Dictionary
     CLASS_NAMES = {0:'ball' , 1:'goalkeeper', 2:'player', 3:'referee'}
 

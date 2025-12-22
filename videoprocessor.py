@@ -4,9 +4,10 @@ import numpy as np
 class VideoProcessor:
     # this constructor takes in the model as a parameter because we will always need to have a model set to do processing
     # we also pass the colors_dict because we want to have assigned colors for our players everytime a video is processed
-    def __init__(self, model, annotator):
+    def __init__(self, model, annotator, team_assigner):
         self.model = model
         self.annotator = annotator
+        self.team_assigner = team_assigner
 
     # this function is where we are running our model.predict()
     # remember that a model.predict gives you results which have information like the classes and bounding box coordinates
@@ -32,14 +33,14 @@ class VideoProcessor:
         if results[0].boxes.id is not None:
             track_ids = results[0].boxes.id.cpu().numpy().astype(int)
             for track_id, detection, detection_class in zip(
-                track_ids, detections, detections_class
-            ):
+                track_ids, detections, detections_class):
+                
                 x1, y1, x2, y2 = detection.cpu().numpy().astype(int)
-                self.annotator.draw_player_arc(
-                    draw_frame, int(detection_class), x1, x2, y1, y2, track_id
-                )
+                assigned_team= self.team_assigner.get_team(draw_frame, x1, y1, x2, y2, track_id)
+                
+                self.annotator.draw_player_arc(draw_frame, int(detection_class), x1, x2, y1, y2, track_id, assigned_team)                
         else:
             for detection, detection_class in zip(detections, detections_class):
-                x1, y1, x2, y2 = detection.cpu().numpy().astype(int)
+                x1, y1, x2, y2 = detection.cpu().numpy().astype(int)            
                 self.annotator.draw_player_arc(draw_frame, int(detection_class), x1, x2, y1, y2)
         return draw_frame

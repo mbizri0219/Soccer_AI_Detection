@@ -1,12 +1,14 @@
 import numpy as np 
 from sklearn.cluster import KMeans
 from utils import player_jersey
+import cv2
 
 class Team_Assigner:
     def __init__(self, n_teams = 2):
         self.n_teams = n_teams
         self.team_kmeans = None 
-    
+        self.track_to_team_dict = {}
+        
     def fit_from_detections(self, frame, detections):
         """
         Collects jersey crops from detections and trains the model.
@@ -27,15 +29,27 @@ class Team_Assigner:
         jx1, jy1, jx2, jy2 = player_jersey(x1, y1, x2, y2)
         return frame[jy1:jy2, jx1:jx2]
 
-    def get_team(self, frame, x1, y1, x2, y2):
-        jx1, jy1, jx2, jy2 = player_jersey(x1, y1, x2, y2)
-        jersey_crop = frame[jy1:jy2, jx1:jx2]
-        return self.predict(jersey_crop)
+    def get_team(self, frame, x1, y1, x2, y2, track_id):
+            if track_id in self.track_to_team_dict:
+                return self.track_to_team_dict[track_id]
+            else:
+                jx1, jy1, jx2, jy2 = player_jersey(x1, y1, x2, y2)
+                jersey_crop = frame[jy1:jy2, jx1:jx2]
+                jersey_predict = self.predict(jersey_crop)
+                self.track_to_team_dict[track_id] = jersey_predict
+                return jersey_predict
     
     def get_dominant_color(self, image):
+        hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        lower_green_bound = np.array([35,40,40])
+        upper_green_bound = np.array([50, 255, 255])
+        green_mask = cv2.inRange(hsv_image, lower_green_bound, upper_green_bound)
+        reshaped_green_mask = green_mask.reshape(-1)
         reshaped_image = image.reshape(-1, 3)
+        filtered_pixels = reshaped_image[reshaped_green_mask == 0]
+        
         kmeans = KMeans(n_clusters=2)
-        kmeans.fit(reshaped_image)
+        kmeans.fit(filtered_pixels)
         labels = kmeans.labels_
         counts = np.bincount(labels)
         dominant_cluster = np.argmax(counts)
@@ -47,7 +61,7 @@ class Team_Assigner:
         for jersey_crop in jersey_crops:
             dominant_color = self.get_dominant_color(jersey_crop)
             colors.append(dominant_color)
-        colors_np_array = np.array(colors)
+        colors_np_array = np.array(colors) #why did we convert to a numpy array here
         self.team_kmeans = KMeans(n_clusters = self.n_teams)
         self.team_kmeans.fit(colors_np_array)
         

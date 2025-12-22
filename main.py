@@ -18,11 +18,11 @@ out = cv2.VideoWriter(Config.OUTPUT_VIDEO_PATH, fourcc, Config.OUTPUT_FPS, (fram
 #the model we are using which is the best.pt model that we trained on our personal dataset
 model = YOLO(Config.MODEL_PATH)
 
-annotator = Annotator(Config.CLASS_COLORS)
-
-videoprocessor = VideoProcessor(model, annotator)
-
+annotator = Annotator(Config.CLASS_COLORS, Config.TEAM_COLORS)
 team_assigner = Team_Assigner()
+videoprocessor = VideoProcessor(model, annotator, team_assigner)
+
+
 ret, first_frame = cap.read()
 results = model.predict(first_frame)
 team_assigner.fit_from_detections(first_frame, results[0].boxes.xyxy)
