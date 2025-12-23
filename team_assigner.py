@@ -8,8 +8,21 @@ class Team_Assigner:
         self.n_teams = n_teams
         self.team_kmeans = None 
         self.track_to_team_dict = {}
+        self.jersey_crops = []
+    
+    def collect_from_frame(self, frame, detection_coordinates, detection_classes):
+        for detection_coordinate, detection_class in zip(detection_coordinates, detection_classes):
+            x1, y1, x2, y2 = detection_coordinate.cpu().numpy().astype(int)
+            if detection_class == 2:
+                crop = self.get_jersey_crop(frame, x1, y1, x2, y2)
+                self.jersey_crops.append(crop)
+                
+    def fit_collected(self):
+        self.fit(self.jersey_crops)
+        self.jersey_crops.clear()
+            
         
-    def fit_from_detections(self, frame, detections):
+    def fit_from_detections(self, frame, detection_coordinates, detection_classes):
         """
         Collects jersey crops from detections and trains the model.
         
@@ -17,11 +30,11 @@ class Team_Assigner:
         detections: the boxes.xyxy from YOLO results
         """
         jersey_crops = []
-        for detection in detections:
-            x1, y1, x2, y2 = detection.cpu().numpy().astype(int)
-            crop = self.get_jersey_crop(frame, x1, y1, x2, y2)
-            jersey_crops.append(crop)
-        
+        for detection_coordinate, detection_class in zip(detection_coordinates, detection_classes):
+            x1, y1, x2, y2 = detection_coordinate.cpu().numpy().astype(int)
+            if detection_class == 2:
+                crop = self.get_jersey_crop(frame, x1, y1, x2, y2)
+                jersey_crops.append(crop)
         self.fit(jersey_crops)
     
     def get_jersey_crop(self, frame, x1, y1, x2, y2):
@@ -47,8 +60,9 @@ class Team_Assigner:
         reshaped_green_mask = green_mask.reshape(-1)
         reshaped_image = image.reshape(-1, 3)
         filtered_pixels = reshaped_image[reshaped_green_mask == 0]
-        
         kmeans = KMeans(n_clusters=2)
+        if len(filtered_pixels) == 0:
+            filtered_pixels = reshaped_image
         kmeans.fit(filtered_pixels)
         labels = kmeans.labels_
         counts = np.bincount(labels)
@@ -60,8 +74,9 @@ class Team_Assigner:
         colors = []
         for jersey_crop in jersey_crops:
             dominant_color = self.get_dominant_color(jersey_crop)
+            print(dominant_color)
             colors.append(dominant_color)
-        colors_np_array = np.array(colors) #why did we convert to a numpy array here
+        colors_np_array = np.array(colors)
         self.team_kmeans = KMeans(n_clusters = self.n_teams)
         self.team_kmeans.fit(colors_np_array)
         

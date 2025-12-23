@@ -30,17 +30,24 @@ class VideoProcessor:
         results = self.run_tracker(inference_frame)
         detections = results[0].boxes.xyxy
         detections_class = results[0].boxes.cls
+        # print(len(results[0].boxes.xyxy))
         if results[0].boxes.id is not None:
+            # print(len(results[0].boxes.id))
             track_ids = results[0].boxes.id.cpu().numpy().astype(int)
             for track_id, detection, detection_class in zip(
                 track_ids, detections, detections_class):
                 
                 x1, y1, x2, y2 = detection.cpu().numpy().astype(int)
-                assigned_team= self.team_assigner.get_team(draw_frame, x1, y1, x2, y2, track_id)
+                # print(f"Class: {detection_class}, Track ID: {track_id}")
+                if detection_class == 2:                   
+                    assigned_team= self.team_assigner.get_team(draw_frame, x1, y1, x2, y2, track_id)                
+                    self.annotator.draw_player_arc(draw_frame, int(detection_class), x1, x2, y1, y2, track_id, assigned_team)
                 
-                self.annotator.draw_player_arc(draw_frame, int(detection_class), x1, x2, y1, y2, track_id, assigned_team)                
+                else:
+                    self.annotator.draw_player_arc(draw_frame, int(detection_class), x1, x2, y1, y2, track_id)                            
         else:
             for detection, detection_class in zip(detections, detections_class):
-                x1, y1, x2, y2 = detection.cpu().numpy().astype(int)            
+                x1, y1, x2, y2 = detection.cpu().numpy().astype(int)
+                # print(f"Class: {detection_class}, Track ID: {track_id}")            
                 self.annotator.draw_player_arc(draw_frame, int(detection_class), x1, x2, y1, y2)
         return draw_frame
