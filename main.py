@@ -22,6 +22,7 @@ annotator = Annotator(Config.CLASS_COLORS, Config.TEAM_COLORS)
 team_assigner = Team_Assigner()
 videoprocessor = VideoProcessor(model, annotator, team_assigner)
 
+#first 21 frames
 for i in range(21):
     ret, frame = cap.read()
     results = model.predict(frame)
@@ -29,6 +30,13 @@ for i in range(21):
     detection_coordinates = results[0].boxes.xyxy
     team_assigner.collect_from_frame(frame, detection_coordinates, detection_classes)
 team_assigner.fit_collected()
+
+#only first frame
+# ret, frame = cap.read()
+# results = model.predict(frame)
+# detection_classes = results[0].boxes.cls 
+# detection_coordinates = results[0].boxes.xyxy
+# team_assigner.fit_from_detections(frame, detection_coordinates, detection_classes)
 cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
 
 

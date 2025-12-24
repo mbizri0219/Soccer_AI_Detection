@@ -52,22 +52,18 @@ class Team_Assigner:
                 self.track_to_team_dict[track_id] = jersey_predict
                 return jersey_predict
     
-    def get_dominant_color(self, image):
-        hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-        lower_green_bound = np.array([35,40,40])
-        upper_green_bound = np.array([50, 255, 255])
-        green_mask = cv2.inRange(hsv_image, lower_green_bound, upper_green_bound)
-        reshaped_green_mask = green_mask.reshape(-1)
-        reshaped_image = image.reshape(-1, 3)
-        filtered_pixels = reshaped_image[reshaped_green_mask == 0]
-        kmeans = KMeans(n_clusters=2)
-        if len(filtered_pixels) == 0:
-            filtered_pixels = reshaped_image
-        kmeans.fit(filtered_pixels)
+    def get_dominant_color(self, cropped_image):
+        image_height = cropped_image.shape[0]   
+        image_width= cropped_image.shape[1]
+        reshaped_image = cropped_image.reshape(-1, 3)
+        kmeans = KMeans(n_clusters=2, init="k-means++", n_init=1)
+        kmeans.fit(reshaped_image)
         labels = kmeans.labels_
-        counts = np.bincount(labels)
-        dominant_cluster = np.argmax(counts)
-        return kmeans.cluster_centers_[dominant_cluster]
+        reshaped_label_image = labels.reshape(image_height, image_width)
+        corner_pixels = [reshaped_label_image[0, 0], reshaped_label_image[0, -1], reshaped_label_image[-1, 0], reshaped_label_image[-1, -1]]
+        background_cluster= max(set(corner_pixels), key=corner_pixels.count)
+        jersey_cluster = 1 - background_cluster
+        return kmeans.cluster_centers_[jersey_cluster]
         
     def fit(self, jersey_crops):
         
@@ -77,7 +73,7 @@ class Team_Assigner:
             print(dominant_color)
             colors.append(dominant_color)
         colors_np_array = np.array(colors)
-        self.team_kmeans = KMeans(n_clusters = self.n_teams)
+        self.team_kmeans = KMeans(n_clusters = self.n_teams, init="k-means++", n_init=10)
         self.team_kmeans.fit(colors_np_array)
         
     def predict(self, jersey_crop):

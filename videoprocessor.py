@@ -23,6 +23,7 @@ class VideoProcessor:
         return results
 
     def run_tracker(self, frame):
+        #uses YOLO's Bytetrack
         results = self.model.track(frame, tracker="bytetrack.yaml", persist=True)
         return results
 
